@@ -17,6 +17,15 @@ const generateTaskId = function() {
 
 // Todo: create a function to create a task card
 const createTaskCard = function(task) {
+    const taskCard = $("<div>")
+    .addClass("card w-75 task-card draggable my-3")
+    .attr("data-task-id", task.id)
+    const cardHeader = $("<div>").addClass("card-header h4").text(task.title);
+    const cardBody = $("<div>").addClass("card-body");
+    const cardDescription = $("<p>").addClass("card-text").text(task.description);
+    const cardDueDate = $("<p>").addClass("card-text").text(task.dueDate);
+    const cardDeleteButton = $("<button>").addClass("btn btn-danger delete").text("Delete").attr("data-task-id", task.id);
+    cardDeleteButton.on("click", handleDeleteTask);
 
 }
 
@@ -71,7 +80,19 @@ const handleAddTask = function(event){
 
     const task = {
         id: generateTaskId(),
+        title: $("#taskTitle").val(),
+        description: $("#taskDescription").val(),
+        dueDate: $("#taskDueDate").val(),
+        status: "to-do"
     }
+
+    taskList.push(task);
+    localStorage.setItem("tasks", JSON.stringify(taskList));
+    renderTaskList();
+
+    $("#taskTitle").val("");
+    $("#taskDescription").val("");
+    $("#taskDueDate").val("");
 }
 
 // Todo: create a function to handle deleting a task
@@ -81,14 +102,29 @@ const handleAddTask = function(event){
 
 // Todo: create a function to handle dropping a task into a new status lane
 const handleDrop = function(event, ui) {
+    const taskId = ui.draggable.dataset.taskId;
+    const newStatus = event.target.id
 
+    for(let i = 0; i < taskList.length; i++) {
+        if(tasklist[i].id == parseInt(taskId)) {
+            taskList[i].status = newStatus;
+        }
+    }
+    localStorage.setItem("tasks", JSON.stringify(taskList));
+    renderTaskList();
 }
+
 
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
     renderTaskList();
 
     $("#taskForm").on("submit", handleAddTask);
+
+    $(".lane").draggable({
+        accept: ".draggable",
+        drop: handleDrop
+    })
 
 
 });
