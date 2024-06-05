@@ -4,6 +4,14 @@ let nextId = JSON.parse(localStorage.getItem("nextId"));
 
 // Todo: create a function to generate a unique task id
 const generateTaskId = function() {
+    if(nextId === null) {
+        nextId = 1;
+    } else {
+        nextId++;
+    }
+
+    localStorage.setItem("nextId", JSON.stringify(nextId));
+    return nextId;
 
 }
 
@@ -53,7 +61,11 @@ const renderTaskList = function() {
     
 // Todo: create a function to handle adding a new task
 const handleAddTask = function(event){
+    event.preventDefault();
 
+    const task = {
+        id: generateTaskId(),
+    }
 }
 
 // Todo: create a function to handle deleting a task
