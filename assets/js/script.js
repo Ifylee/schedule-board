@@ -27,6 +27,22 @@ const createTaskCard = function(task) {
     const cardDeleteButton = $("<button>").addClass("btn btn-danger delete").text("Delete").attr("data-task-id", task.id);
     cardDeleteButton.on("click", handleDeleteTask);
 
+    if(task.dueDate && task.status !== "done") {
+        const now = dayjs();
+        const taskDueDate = dayjs(task.duedate, "DD/MM/YYYY");
+
+        if(now.isSame(taskDueDate, "day")) {
+            taskCard.addClass("bg-warning text-white");
+        } else if(now.isAfter(taskDueDate, "day")) {
+            taskCard.addClass("bg-danger text-white");
+            cardDeleteButton.addClass("border-light")
+        }
+    }
+
+        cardBody.append(cardDescription, cardDueDate, cardDeleteButton);
+        taskCard.append(cardHeader, cardBody);
+
+        return taskCard;
 }
 
 // Todo: create a function to render the task list and make cards draggable
