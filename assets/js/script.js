@@ -38,6 +38,12 @@ const renderTaskList = function() {
     for(let i = 0; i < taskList.length; i++) {
         if(taskList[i].status === "to-do") {
             todoList.append(createTaskCard(taskList[i]));
+
+        } else if(taskList[i].status === "in-progress") {
+            inProgressList.append(createTaskCard(taskList[i]));
+        
+        } else if(taskList[i].status === "done") {
+            doneList.append(createTaskCard(taskList[i]));
         }
     }
 }
