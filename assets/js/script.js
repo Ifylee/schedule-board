@@ -116,18 +116,17 @@ const handleAddTask = function(event){
  function handleDeleteTask(event) {
     event.preventDefault();
     let taskId = $(this).attr("data-task-id");
-    taskList = taskList.filter(task => task.id !== parseInt(taskId));
-
-    // const filteredTaskList = [];
-    // const taskIdInt = parseInt(taskId);
     
-    // for (let i = 0; i < taskList.length; i++) {
-    //     if (taskList[i].id !== taskIdInt) {
-    //         filteredTaskList.push(taskList[i]);
-    //     }
-    // }
+    const filteredTaskList = [];
+    const taskIdInt = parseInt(taskId);
     
-    // taskList = filteredTaskList;
+    for (let i = 0; i < taskList.length; i++) {
+        if (taskList[i].id !== taskIdInt) {
+            filteredTaskList.push(taskList[i]);
+        }
+    }
+    
+    taskList = filteredTaskList;
 
     localStorage.setItem("tasks", JSON.stringify(taskList));
     renderTaskList();
