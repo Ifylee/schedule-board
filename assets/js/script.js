@@ -20,6 +20,7 @@ const createTaskCard = function(task) {
     const taskCard = $("<div>")
     .addClass("card w-75 task-card draggable my-3")
     .attr("data-task-id", task.id)
+
     const cardHeader = $("<div>").addClass("card-header h4").text(task.title);
     const cardBody = $("<div>").addClass("card-body");
     const cardDescription = $("<p>").addClass("card-text").text(task.description);
@@ -27,23 +28,23 @@ const createTaskCard = function(task) {
     const cardDeleteButton = $("<button>").addClass("btn btn-danger delete").text("Delete").attr("data-task-id", task.id);
     cardDeleteButton.on("click", handleDeleteTask);
 
-    if(task.dueDate && task.status !== "done") {
+    if(task.dueDate && task.status !== 'done') {
         const now = dayjs();
-        const taskDueDate = dayjs(task.duedate, "DD/MM/YYYY");
+        const taskDueDate = dayjs(task.dueDate, "DD/MM/YYYY");
 
-        if(now.isSame(taskDueDate, "day")) {
+        if(now.isSame(taskDueDate, 'day')) {
             taskCard.addClass("bg-warning text-white");
-        } else if(now.isAfter(taskDueDate, "day")) {
+        } else if(now.isAfter(taskDueDate)) {
             taskCard.addClass("bg-danger text-white");
             cardDeleteButton.addClass("border-light")
-        }
-    }
+        };
+    };
 
         cardBody.append(cardDescription, cardDueDate, cardDeleteButton);
         taskCard.append(cardHeader, cardBody);
 
         return taskCard;
-}
+};
 
 // Todo: create a function to render the task list and make cards draggable
 const renderTaskList = function() {
@@ -71,9 +72,9 @@ const renderTaskList = function() {
             doneList.append(createTaskCard(taskList[i]));
         }
     }
-}
 
-    $(".draggable".draggable({
+
+    $(".draggable").draggable({
         opacity: 0.7,
         zIndex: 100,
 
@@ -88,8 +89,8 @@ const renderTaskList = function() {
                     maxWidth: original.outerWidth(),
                 });
          }
-    }));
-    
+    });
+}  
 // Todo: create a function to handle adding a new task
 const handleAddTask = function(event){
     event.preventDefault();
@@ -112,20 +113,37 @@ const handleAddTask = function(event){
 }
 
 // Todo: create a function to handle deleting a task
- const handleDeleteTask = function(event){
+ function handleDeleteTask(event) {
+    event.preventDefault();
+    let taskId = $(this).attr("data-task-id");
+    taskList = taskList.filter(task => task.id !== parseInt(taskId));
 
+    // const filteredTaskList = [];
+    // const taskIdInt = parseInt(taskId);
+    
+    // for (let i = 0; i < taskList.length; i++) {
+    //     if (taskList[i].id !== taskIdInt) {
+    //         filteredTaskList.push(taskList[i]);
+    //     }
+    // }
+    
+    // taskList = filteredTaskList;
+
+    localStorage.setItem("tasks", JSON.stringify(taskList));
+    renderTaskList();
 }
 
 // Todo: create a function to handle dropping a task into a new status lane
 const handleDrop = function(event, ui) {
-    const taskId = ui.draggable.dataset.taskId;
+    const taskId = ui.draggable.data('task-id');
     const newStatus = event.target.id
 
-    for(let i = 0; i < taskList.length; i++) {
-        if(tasklist[i].id == parseInt(taskId)) {
-            taskList[i].status = newStatus;
-        }
-    }
+    $.each(taskList, function(index, task) {
+        if (task.id === parseInt(taskId)) {
+            task.status = newStatus;
+            return false;
+       }
+    })
     localStorage.setItem("tasks", JSON.stringify(taskList));
     renderTaskList();
 }
@@ -137,10 +155,14 @@ $(document).ready(function () {
 
     $("#taskForm").on("submit", handleAddTask);
 
-    $(".lane").draggable({
+    $(".lane").droppable({
         accept: ".draggable",
         drop: handleDrop
     })
 
-
+    
+    $("#taskDueDate").datepicker({
+        changeMonth: true,
+        changeYear: true
+    });
 });
