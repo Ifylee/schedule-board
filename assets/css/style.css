@@ -1,16 +1,20 @@
+/* Sets the default font family and size for the entire page */
 body {
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
 }
 
+/* Ensures the swim lanes have a minimum height of 60% of the viewport height */
 .swim-lanes {
   min-height: 60vh;
 }
 
+/* Centers task cards horizontally within their container */
 .task-card {
   margin: 0 auto;
 }
 
+/* Changes the cursor to a "grab" hand when hovering over a task card, indicating it's draggable */
 .task-card:hover {
   cursor: grab;
 }
